@@ -63,4 +63,19 @@ public class ScheduleService {
                 findSchedule.getModifiedAt()
         );
     }
+
+    public ScheduleResponseDto updateSchedule(Long id, String title, String contents) {
+        Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
+        findSchedule.updateSchedule(title, contents);
+        scheduleRepository.save(findSchedule);
+
+        return new ScheduleResponseDto(
+                findSchedule.getId(),
+                findSchedule.getUser().getUsername(),
+                findSchedule.getTitle(),
+                findSchedule.getContents(),
+                findSchedule.getCreatedAt(),
+                findSchedule.getModifiedAt()
+        );
+    }
 }

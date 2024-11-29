@@ -2,9 +2,7 @@ package com.example.scheduleproject3.controller;
 
 import com.example.scheduleproject3.dto.ScheduleRequestDto;
 import com.example.scheduleproject3.dto.ScheduleResponseDto;
-import com.example.scheduleproject3.entity.Schedule;
 import com.example.scheduleproject3.service.ScheduleService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,16 +29,30 @@ public class ScheduleController {
         return new ResponseEntity<>(scheduleResponseDto, HttpStatus.CREATED);
     }
 
+    // 일정 전체 조회
     @GetMapping
     public ResponseEntity<List<ScheduleResponseDto>> findAllSchedules(){
         List<ScheduleResponseDto> scheduleResponseDtoList = scheduleService.findAllSchedules();
         return new ResponseEntity<>(scheduleResponseDtoList, HttpStatus.OK);
     }
 
+    // 일정 단건 조회
     @GetMapping("/{id}")
     public ResponseEntity<ScheduleResponseDto> findScheduleById(@PathVariable Long id){
         ScheduleResponseDto scheduleResponseDto = scheduleService.findScheduleById(id);
         return new ResponseEntity<>(scheduleResponseDto, HttpStatus.OK);
+    }
+
+    // 일정 수정
+    @PatchMapping("/{id}")
+    public ResponseEntity<ScheduleResponseDto> updateSchedule(
+            @PathVariable Long id,
+            @RequestBody ScheduleRequestDto scheduleRequestDto
+    ){
+        ScheduleResponseDto updatedSchedule =
+                scheduleService.updateSchedule(id, scheduleRequestDto.getTitle(),scheduleRequestDto.getContents());
+
+        return new ResponseEntity<>(updatedSchedule, HttpStatus.OK);
     }
 
 }
