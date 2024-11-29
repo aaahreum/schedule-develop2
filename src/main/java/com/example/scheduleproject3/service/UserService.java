@@ -28,8 +28,7 @@ public class UserService {
     }
 
     // 전체 유저 조회
-    public List<UserResponseDto> findAllUser() {
-
+    public List<UserResponseDto> findAllUsers() {
         List<User> userList = userRepository.findAll();
         // 변환 후 반환
         return userList.stream().map(UserResponseDto::toDto).toList();
@@ -46,9 +45,13 @@ public class UserService {
         }
 
         User findUser = optionalUser.get();
-
         return new UserResponseDto(findUser.getEmail(), findUser.getUsername());
 
     }
 
+    // 유저 삭제
+    public void deleteUser(Long id) {
+        User user = userRepository.findByIdOrElseThrow(id);
+        userRepository.delete(user);
+    }
 }
