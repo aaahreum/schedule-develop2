@@ -56,7 +56,7 @@ public class UserService {
     }
 
     // 로그인 인증
-    public String authenticate(String email, String password) {
+    public String login(String email, String password) {
         User findUser = userRepository.findUserByEmail(email).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다.")
         );
@@ -66,5 +66,18 @@ public class UserService {
         }
 
         return "로그인 성공";
+    }
+
+    // 없는 이메일로도 로그아웃이 되는 이유??
+    public UserResponseDto findUserByEmail(String email) {
+        // userRepository.findById(id) -> Optional<User> 반환
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+
+        if(optionalUser.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,  "이메일을 찾을 수 없습니다.");
+        }
+
+        User findUser = optionalUser.get();
+        return new UserResponseDto(findUser.getEmail(), findUser.getPassword());
     }
 }

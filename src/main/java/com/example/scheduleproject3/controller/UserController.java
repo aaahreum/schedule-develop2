@@ -1,5 +1,6 @@
 package com.example.scheduleproject3.controller;
 
+import com.example.scheduleproject3.common.Const;
 import com.example.scheduleproject3.dto.SignUpRequestDto;
 import com.example.scheduleproject3.dto.SignUpResponseDto;
 import com.example.scheduleproject3.dto.UserRequestDto;
@@ -61,9 +62,15 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserRequestDto userRequestDto, HttpServletRequest request){
 
-        String successMessage = userService.authenticate(userRequestDto.getEmail(), userRequestDto.getPassword());
+        String successMessage = userService.login(userRequestDto.getEmail(), userRequestDto.getPassword());
+
         HttpSession session = request.getSession(true);
-        session.setAttribute("sessionKey", userRequestDto.getEmail());
+
+        // 이메일로 회원 정보 조회
+        UserResponseDto loginUser = userService.findUserByEmail(userRequestDto.getEmail());
+
+        // Session에 로그인 회원 정보 저장
+        session.setAttribute(Const.LOGIN_USER, loginUser);
 
         return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
