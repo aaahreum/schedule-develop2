@@ -71,7 +71,7 @@ public class UserService {
     // 없는 이메일로도 로그아웃이 되는 이유??
     public UserResponseDto findUserByEmail(String email) {
         // userRepository.findById(id) -> Optional<User> 반환
-        Optional<User> optionalUser = userRepository.findByEmail(email);
+        Optional<User> optionalUser = userRepository.findUserByEmail(email);
 
         if(optionalUser.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,  "이메일을 찾을 수 없습니다.");
