@@ -2,8 +2,11 @@ package com.example.scheduleproject3.controller;
 
 import com.example.scheduleproject3.dto.SignUpRequestDto;
 import com.example.scheduleproject3.dto.SignUpResponseDto;
+import com.example.scheduleproject3.dto.UserRequestDto;
 import com.example.scheduleproject3.dto.UserResponseDto;
 import com.example.scheduleproject3.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +16,6 @@ import java.util.List;
 
 // 유저 컨트롤러
 @RestController
-@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -30,7 +32,7 @@ public class UserController {
     }
 
     // 유저 전체 조회
-    @GetMapping
+    @GetMapping("/users")
     public ResponseEntity<List<UserResponseDto>> findAllUsers(){
 
         List<UserResponseDto> userResponseDtolist = userService.findAllUsers();
@@ -39,7 +41,7 @@ public class UserController {
     }
 
     // 특정 유저 조회
-    @GetMapping("/{id}")
+    @GetMapping("/users/{id}")
     public ResponseEntity<UserResponseDto> findUserById(@PathVariable Long id){
 
         UserResponseDto userResponseDto = userService.findUserById(id);
@@ -47,13 +49,34 @@ public class UserController {
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
-    // 유저 수정
-
     // 유저 삭제
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable Long id){
 
         userService.deleteUser(id);
 
+    }
+
+    // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody UserRequestDto userRequestDto, HttpServletRequest request){
+
+        String successMessage = userService.authenticate(userRequestDto.getEmail(), userRequestDto.getPassword());
+        HttpSession session = request.getSession(true);
+        session.setAttribute("sessionKey", userRequestDto.getEmail());
+
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
+    }
+
+    // 로그아웃
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        return new ResponseEntity<>("로그아웃 되었습니다.", HttpStatus.OK);
     }
 }

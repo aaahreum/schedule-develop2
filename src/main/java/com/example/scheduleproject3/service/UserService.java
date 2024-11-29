@@ -54,4 +54,17 @@ public class UserService {
         User user = userRepository.findByIdOrElseThrow(id);
         userRepository.delete(user);
     }
+
+    // 로그인 인증
+    public String authenticate(String email, String password) {
+        User findUser = userRepository.findUserByEmail(email).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다.")
+        );
+
+        if(!findUser.getPassword().equals(password)){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 틀렸습니다.");
+        }
+
+        return "로그인 성공";
+    }
 }

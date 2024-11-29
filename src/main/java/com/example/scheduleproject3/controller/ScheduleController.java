@@ -55,4 +55,12 @@ public class ScheduleController {
         return new ResponseEntity<>(updatedSchedule, HttpStatus.OK);
     }
 
+    // 일정 삭제
+    @DeleteMapping("/schedule/{id}")
+    public void deleteSchedule(@PathVariable Long id){
+
+        scheduleService.deleteSchedule(id);
+
+    }
+
 }

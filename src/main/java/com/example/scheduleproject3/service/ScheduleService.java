@@ -41,11 +41,13 @@ public class ScheduleService {
         );
     }
 
+    // 전체 일정 조회
     public List<ScheduleResponseDto> findAllSchedules() {
         List<Schedule> scheduleList = scheduleRepository.findAll();
         return scheduleList.stream().map(ScheduleResponseDto::toDto).toList();
     }
 
+    // 일정 단건 조회
     public ScheduleResponseDto findScheduleById(Long id) {
         Optional<Schedule> optionalSchedule = scheduleRepository.findById(id);
 
@@ -64,6 +66,7 @@ public class ScheduleService {
         );
     }
 
+    // 일정 수정
     public ScheduleResponseDto updateSchedule(Long id, String title, String contents) {
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
         findSchedule.updateSchedule(title, contents);
@@ -77,5 +80,11 @@ public class ScheduleService {
                 findSchedule.getCreatedAt(),
                 findSchedule.getModifiedAt()
         );
+    }
+
+    // 일정 삭제
+    public void deleteSchedule(Long id) {
+        Schedule schedule = scheduleRepository.findByIdOrElseThrow(id);
+        scheduleRepository.delete(schedule);
     }
 }
